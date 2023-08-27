@@ -1,9 +1,10 @@
 import json
 from forums import Forums
 
+
 f = Forums(
     base_link="http://germania7zs27fu3gi76wlr5rd64cc2yjexyzvrbm4jufk7pibrpizad.onion",
-    cookie="d7lns6g5j16kv7aaihbd127mqpti9m5trhn5s7d61il3h1cq"
+    cookie="2kc9mlhkcr12qojdoqviu6bp5g9vjb70jfg12ab1surgg85s"
 )
 data = f.crawl_forums()
 
