@@ -5,8 +5,8 @@ import requests
 
 class Forums(Helper):
     
-    def __init__(self, base_link, cookie):
-        Helper.__init__(self, 1)
+    def __init__(self, verbose, db_host, base_link, cookie):
+        super().__init__(verbose, db_host)
         self.base_link = base_link
         self.log.debug("Forum crawler base link: {}".format(self.base_link))
         self.log.debug("Forum crawler cookie: {}".format(cookie))
@@ -126,17 +126,17 @@ class Forums(Helper):
                 "last_post_time": last_post_time,
                 "last_post_author": last_post_author
             })
-        
-        self.log.debug
 
         return posts
     
-    def crawl_forums(self):
+    def crawl_forums(self, bulk_push_db=False, auto_push_db=False):
         self.log.info("Started crawling the forums")
         html_content = self.__request_onion_sites()
-        forums = self.get_forum_info(html_content=html_content.text)
-        for idx_forums, forum in enumerate(forums):
-            self.log.info("[{}/{}] Processing forum...".format(idx_forums+1, len(forums)))
+        if not html_content:
+            return None
+        self.forums = self.get_forum_info(html_content=html_content.text)
+        for idx_forums, forum in enumerate(self.forums):
+            self.log.info("[{}/{}] Processing forum...".format(idx_forums+1, len(self.forums)))
             self.log.debug("Processing forum: {}".format(forum["link"]))
             forum_html_content = self.__request_onion_sites(forum["link"])
             forum_tree = html.fromstring(forum_html_content.text)
@@ -148,25 +148,44 @@ class Forums(Helper):
                     subforum_html_content = self.__request_onion_sites(subforum["link"])
                     posts = self.get_posts_info(html_content=subforum_html_content.text)
                     subforums[idx_subforum]["posts"] = posts
-                forums[idx_forums]["subforums"] = subforums
+                self.forums[idx_forums]["subforums"] = subforums
             elif forum_tree.xpath('//div[contains(@class, "forum-views")]'):
                 self.log.debug("Forums does not contain subforums")
                 posts = self.get_posts_info(forum_tree)
-                forums[idx_forums]["posts"] = posts
+                self.forums[idx_forums]["posts"] = posts
             else:
-                return ["No matching HTML structure found!"]
-        return forums
+                self.log.error("No matching HTML structure found. Provided HTML is neither post view forum nor subforum")
+                return None
+            if not bulk_push_db and auto_push_db:
+                self.collection_forums.insert_one(self.forums[idx_forums])
+        if bulk_push_db and auto_push_db:
+            self.collection_forums.insert_many(self.forums)
+        return self.forums
+    
+    def push_forum_data(self):
+        if not hasattr(self, "forums"):
+            self.log.error("Could not push data to DB because 'self.forums' attribute seems to be empty")
+            return None
+        else:
+            try:
+                self.collection_forums.insert_many(self.forums)
+            except BaseException as err:
+                self.log.error("Failed to insert documents. See attached error message", exc_info=err)
     
     def __request_onion_sites(self, link=None):
         self.log.debug("Sending request for {}"
                        .format(link if link else self.base_link))
         data = self.session.get(link if link else self.base_link)
-        if data.status_code == 200:
+        if "phishing" in data.text.lower():
+            self.log.error("Received phishing mirror respose")
+            self.log.debug(data.text)
+        elif data.status_code == 200:
             self.log.debug("Successfully received response")
+            return data
         else:
             self.log.error("Received unexpected response {}".format(data.status_code))
             self.log.debug(data.text)
-        return data
+        return None
 
     def __convert_relative_date(self, relative_date):
         today = datetime.now().date()

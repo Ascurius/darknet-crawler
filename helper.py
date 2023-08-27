@@ -1,9 +1,11 @@
 import logging
 import os
+import pymongo
 
 class Helper:
-    def __init__(self, verbose):
-        self.init_logger(verbose)
+    def __init__(self, logging_verbose, database_host):
+        self.init_logger(logging_verbose)
+        self.init_database(database_host)
 
     def init_logger(self, verbose):
         log_path = os.path.expanduser("~/darknet-crawler/forums.log")
@@ -28,3 +30,17 @@ class Helper:
         log.addHandler(console_handler)
         log.addHandler(file_handler)
         self.log = log
+
+    def init_database(self, db_host):
+        self.client = pymongo.MongoClient(db_host)
+        self.database = self.client["praktikum"]
+        self.collection_forums = self.database["forums"]
+        self.collection_users = self.database["users"]
+
+    def clear_collection(self, collection):
+        if hasattr(self, "collection_{}".format(collection)):
+            collection_attr = getattr(self, "collection_{}".format(collection))
+            response = collection_attr.delete_many({})
+            self.log.debug("Successfully deleted {} documents".format(response.deleted_count))
+        else:
+            self.log.error("Could not find the specified collection")
