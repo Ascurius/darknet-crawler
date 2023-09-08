@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Martin Pretz
+
 LOGGING_VERBOSITY = 1
 LOGGING_FILE_PATH = "./darknet-crawler.log"
 

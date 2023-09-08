@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Xian Chen
+
 import re
 import requests
 import json

@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Martin Pretz
+
 import requests
 from lxml import html
 from datetime import datetime, timedelta

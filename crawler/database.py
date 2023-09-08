@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Martin Pretz
+
 import sys
 import config
 import mysql.connector

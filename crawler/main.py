@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Xian Chen
+
 import config
 from forums import Forums
 from database import MySQLConnector

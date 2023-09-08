@@ -1,3 +1,5 @@
+# Copyright (C) 2023 Martin Pretz
+
 import logging
 import os
 import config
