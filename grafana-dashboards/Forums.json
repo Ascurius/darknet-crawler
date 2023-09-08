@@ -1,0 +1,3201 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "groupByField": "forum_title",
+        "sizeField": "posts_count",
+        "textField": "subforum_title",
+        "tiling": "treemapSquarify"
+      },
+      "targets": [
+        {
+          "dataset": "performance_schema",
+          "datasource": {
+            "type": "mysql"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT f.title AS forum_title, s.title AS subforum_title, s.posts_count\r\nFROM forums f\r\nJOIN subforums s ON f.forum_id = s.forum_id\r\nWHERE NOT EXISTS (\r\n    SELECT 1 \r\n    FROM forums AS t2 \r\n    WHERE t2.crawling_date > f.crawling_date\r\n)\r\nORDER BY s.posts_count DESC;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Forum and Subforum Posts Distribution",
+      "type": "marcusolsson-treemap-panel"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "topics_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of topics"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "posts_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of posts"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "dataset": "performance_schema",
+          "datasource": {
+            "type": "mysql"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n    t1.title,\r\n    t1.topics_count,\r\n    t1.posts_count\r\nFROM forums as t1\r\nWHERE NOT EXISTS (\r\n    SELECT 1 \r\n    FROM forums AS t2 \r\n    WHERE t2.crawling_date > t1.crawling_date\r\n)\r\nGROUP BY\r\n    t1.title,\r\n    t1.topics_count,\r\n    t1.posts_count;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Forum Activity Comparison",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_posts"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total number of posts"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "id": 1,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "dataset": "performance_schema",
+          "datasource": {
+            "type": "mysql"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT t1.last_post_author, SUM(posts_count) AS total_posts\r\nFROM forums as t1\r\nWHERE NOT EXISTS (\r\n    SELECT 1 \r\n    FROM forums AS t2 \r\n    WHERE t2.crawling_date > t1.crawling_date\r\n)\r\nGROUP BY t1.last_post_author\r\nORDER BY total_posts DESC\r\nLIMIT 10;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Top Forum Contributors",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "posts_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of posts"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "topics_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of topics"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 13,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT t1.title, t1.posts_count, t1.topics_count\r\nFROM subforums AS t1\r\nINNER JOIN forums f ON t1.forum_id = f.forum_id AND f.title = 'Biete'\r\nWHERE NOT EXISTS (\r\n  SELECT 1\r\n  FROM subforums AS t2\r\n  WHERE t2.crawling_date > t1.crawling_date\r\n)",
+          "refId": "Biete",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Activity in subforum \"Biete\"",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "posts_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of posts"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "topics_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of topics"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "id": 14,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT t1.title, t1.posts_count, t1.topics_count\r\nFROM subforums AS t1\r\nINNER JOIN forums f ON t1.forum_id = f.forum_id AND f.title = 'Suche'\r\nWHERE NOT EXISTS (\r\n  SELECT 1\r\n  FROM subforums AS t2\r\n  WHERE t2.crawling_date > t1.crawling_date\r\n)",
+          "refId": "Suche",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Activity in subforum \"Suche\"",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Drogen & Medikamente"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Drogen & Medikamente"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Waren"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Waren"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Services"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Services"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Sonstiges"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sonstiges"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.subforums WHERE title = 'Drogen & Medikamente' LIMIT 50 ",
+          "refId": "Drogen & Medikamente",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a9abbaab-89ab-4cde-b012-318a656efe54",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Drogen & Medikamente"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Drogen & Medikamente'"
+          },
+          "table": "subforums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.subforums WHERE title = 'Waren' LIMIT 50 ",
+          "refId": "Waren",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a9abbaab-89ab-4cde-b012-318a656efe54",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Waren"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Waren'"
+          },
+          "table": "subforums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.subforums WHERE title = 'Services' LIMIT 50 ",
+          "refId": "Services",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a9abbaab-89ab-4cde-b012-318a656efe54",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Services"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Services'"
+          },
+          "table": "subforums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.subforums WHERE title = 'Sonstiges' LIMIT 50 ",
+          "refId": "Sonstiges",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a9abbaab-89ab-4cde-b012-318a656efe54",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Sonstiges"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Sonstiges'"
+          },
+          "table": "subforums"
+        }
+      ],
+      "title": "Number of posts per subforum over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Information"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Information"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Feedback & Kritik"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Feedback & Kritik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Vorstellungen"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Vorstellungen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Szene News"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Szene News"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "COVID-19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "COVID-19"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Überleben in Krisen- und Katastrophenfällen"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Überleben in Krisen- und Katastrophenfällen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Biete"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Biete"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Suche"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Suche"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "VENDOR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "VENDOR"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Pygmalions Refugium"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pygmalions Refugium"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Talk"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talk"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Information' LIMIT 50 ",
+          "refId": "Information",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Information"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Information'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Feedback & Kritik' LIMIT 50 ",
+          "refId": "Feedback & Kritik",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Feedback & Kritik"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Feedback & Kritik'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Vorstellungen' LIMIT 50 ",
+          "refId": "Vorstellungen",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Vorstellungen"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Vorstellungen'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Szene News' LIMIT 50 ",
+          "refId": "Szene News",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Szene News"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Szene News'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'COVID-19' LIMIT 50 ",
+          "refId": "COVID-19",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "COVID-19"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'COVID-19'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Überleben in Krisen- und Katastrophenfällen' LIMIT 50 ",
+          "refId": "Überleben in Krisen- und Katastrophenfällen",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Überleben in Krisen- und Katastrophenfällen"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Überleben in Krisen- und Katastrophenfällen'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Biete' LIMIT 50 ",
+          "refId": "Biete",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Biete"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Biete'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Suche' LIMIT 50 ",
+          "refId": "Suche",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Suche"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Suche'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'VENDOR' LIMIT 50 ",
+          "refId": "VENDOR",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "VENDOR"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'VENDOR'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Pygmalions Refugium' LIMIT 50 ",
+          "refId": "Pygmalions Refugium",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Pygmalions Refugium"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Pygmalions Refugium'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, posts_count FROM germania.forums WHERE title = 'Talk' LIMIT 50 ",
+          "refId": "Talk",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "posts_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Talk"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Talk'"
+          },
+          "table": "forums"
+        }
+      ],
+      "title": "Number of posts per forum over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Information"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Information"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Feedback & Kritik"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Feedback & Kritik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Vorstellungen"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Vorstellungen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Szene News"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Szene News"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "COVID-19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "COVID-19"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Überleben in Krisen- und Katastrophenfällen"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Überleben in Krisen- und Katastrophenfällen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Biete"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Biete"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Suche"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Suche"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "VENDOR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "VENDOR"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Pygmalions Refugium"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pygmalions Refugium"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Talk"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talk"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 34
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Information' LIMIT 50 ",
+          "refId": "Information",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Information"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Information'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Feedback & Kritik' LIMIT 50 ",
+          "refId": "Feedback & Kritik",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Feedback & Kritik"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Feedback & Kritik'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Vorstellungen' LIMIT 50 ",
+          "refId": "Vorstellungen",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Vorstellungen"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Vorstellungen'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Szene News' LIMIT 50 ",
+          "refId": "Szene News",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Szene News"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Szene News'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'COVID-19' LIMIT 50 ",
+          "refId": "COVID-19",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "COVID-19"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'COVID-19'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Überleben in Krisen- und Katastrophenfällen' LIMIT 50 ",
+          "refId": "Überleben in Krisen- und Katastrophenfällen",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Überleben in Krisen- und Katastrophenfällen"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Überleben in Krisen- und Katastrophenfällen'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Biete' LIMIT 50 ",
+          "refId": "Biete",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Biete"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Biete'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Suche' LIMIT 50 ",
+          "refId": "Suche",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Suche"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Suche'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'VENDOR' LIMIT 50 ",
+          "refId": "VENDOR",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "VENDOR"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'VENDOR'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Pygmalions Refugium' LIMIT 50 ",
+          "refId": "Pygmalions Refugium",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Pygmalions Refugium"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Pygmalions Refugium'"
+          },
+          "table": "forums"
+        },
+        {
+          "dataset": "germania",
+          "datasource": {
+            "type": "mysql",
+            "uid": "dcaa4243-a398-4771-9f70-d1965c401362"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT crawling_date, title, topics_count FROM germania.forums WHERE title = 'Talk' LIMIT 50 ",
+          "refId": "Talk",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "crawling_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "title",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "topics_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [
+                {
+                  "id": "a89ab99b-0123-4456-b89a-b18a6572fde8",
+                  "properties": {
+                    "field": "title",
+                    "operator": "equal",
+                    "value": [
+                      "Talk"
+                    ],
+                    "valueSrc": [
+                      "value"
+                    ],
+                    "valueType": [
+                      "text"
+                    ]
+                  },
+                  "type": "rule"
+                }
+              ],
+              "id": "9ab8a888-89ab-4cde-b012-318a656da20f",
+              "type": "group"
+            },
+            "whereString": "title = 'Talk'"
+          },
+          "table": "forums"
+        }
+      ],
+      "title": "Number of topcis per forum over time",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Forums",
+  "version": 17,
+  "weekStart": ""
+}

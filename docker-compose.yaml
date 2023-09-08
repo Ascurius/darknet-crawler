@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: praktikum_grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=changeme
+      - TZ=Europe/Berlin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+  mysql:
+    container_name: praktikum_mysql
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: germania
+      MYSQL_USER: user
+      MYSQL_PASSWORD: User1234
+      MYSQL_ROOT_PASSWORD: User1234
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql:
+  grafana_data:
