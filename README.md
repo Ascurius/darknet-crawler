@@ -1,6 +1,6 @@
 # Darknet Crawler P4 praktikum
 
-Willkommen zu unserem Darknet Crawler im Rahmen des P4 Praktikums. Ziel dieses Praktikums war es das Darknet Forum <a href="http://germania7zs27fu3gi76wlr5rd64cc2yjexyzvrbm4jufk7pibrpizad.onion">"Germania"</a> näher zu untersuchen, dessen Strukturen zu verstehen, um interessante Daten von diesem Forum zu extrahieren und schlußendlich adäquat für den Benutzer aufzubereiten und zu präsentieren.
+Willkommen zu unserem Darknet Crawler im Rahmen des P4 Praktikums an der TU Darmstadt. Ziel dieses Praktikums war es das Darknet Forum <a href="http://germania7zs27fu3gi76wlr5rd64cc2yjexyzvrbm4jufk7pibrpizad.onion">"Germania"</a> näher zu untersuchen, dessen Strukturen zu verstehen, um interessante Daten von diesem Forum zu extrahieren und schlußendlich adäquat für den Benutzer aufzubereiten und zu präsentieren.
 
 Um Fehler während der Installation und Handhabung möglichst zu vermeiden folgen Sie bitte den nachfolgend beschriebenen Schritten.
 
