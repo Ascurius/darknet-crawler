@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Xian Chen
+# Copyright (C) 2023 Xian Chen, Martin Pretz
 
 import config
 from forums import Forums
